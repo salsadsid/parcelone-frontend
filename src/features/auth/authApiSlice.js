@@ -30,7 +30,10 @@ export const apiSlice = createApi({
                 body: userData,
             }),
         }),
+        getMe: builder.query({
+            query: () => '/auth/me',
+        }),
     }),
 });
 
-export const { useLoginMutation, useRegisterMutation } = apiSlice;
+export const { useLoginMutation, useRegisterMutation, useGetMeQuery } = apiSlice;
