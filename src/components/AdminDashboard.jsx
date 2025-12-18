@@ -2,6 +2,13 @@ import { useGetParcelsQuery, useGetMetricsQuery, useGetAgentsQuery, useAssignAge
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 
 const AdminDashboard = () => {
     const { data: parcels } = useGetParcelsQuery();
@@ -55,16 +62,19 @@ const AdminDashboard = () => {
                                     <p className="text-sm">Status: {parcel.status}</p>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <select
-                                        className="border rounded p-1"
+                                    <Select
                                         defaultValue={parcel.assignedAgent?._id || ""}
-                                        onChange={(e) => handleAssign(parcel._id, e.target.value)}
+                                        onValueChange={(value) => handleAssign(parcel._id, value)}
                                     >
-                                        <option value="">Assign Agent</option>
-                                        {agents?.map(agent => (
-                                            <option key={agent._id} value={agent._id}>{agent.name}</option>
-                                        ))}
-                                    </select>
+                                        <SelectTrigger className="w-[180px]">
+                                            <SelectValue placeholder="Assign Agent" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {agents?.map(agent => (
+                                                <SelectItem key={agent._id} value={agent._id}>{agent.name}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                 </div>
                             </CardContent>
                         </Card>
