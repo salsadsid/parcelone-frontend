@@ -84,14 +84,14 @@ const ParcelDetailsPage = () => {
 
     return (
         <div className="max-w-7xl mx-auto p-4 space-y-6">
-            <h2 className="text-2xl font-bold">Parcel Tracking</h2>
+            <h2 className="text-2xl font-bold text-foreground">Parcel Tracking</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="md:col-span-2 space-y-2">
                     {!currentLocation && (
-                        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+                        <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400 p-4">
                             <div className="flex">
                                 <div className="ml-3">
-                                    <p className="text-sm text-yellow-700">
+                                    <p className="text-sm text-yellow-700 dark:text-yellow-200">
                                         Waiting for location updates...
                                     </p>
                                 </div>
@@ -106,12 +106,12 @@ const ParcelDetailsPage = () => {
                     />
                 </div>
                 <div className="space-y-4">
-                    <div className="bg-white p-4 rounded-lg shadow">
+                    <div className="bg-card text-card-foreground p-4 rounded-lg shadow border">
                         <h3 className="font-semibold mb-2">Details</h3>
                         <p><strong>Status:</strong> {parcel.status}</p>
                         <p><strong>Pickup:</strong> {parcel.pickupAddress}</p>
                         <p><strong>Delivery:</strong> {parcel.deliveryAddress}</p>
-                        <p className="text-xs text-gray-400 mt-2">ID: {parcel._id}</p>
+                        <p className="text-xs text-muted-foreground mt-2">ID: {parcel._id}</p>
                     </div>
 
                     {isAgent && (
