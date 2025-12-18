@@ -16,7 +16,7 @@ const PersistLogin = () => {
 
     useEffect(() => {
         console.log('PersistLogin effect:', { isSuccess, hasUser: !!user, token });
-        if (isSuccess && user) {
+        if (isSuccess && user && token) {
             console.log('PersistLogin dispatching setCredentials');
             dispatch(setCredentials({ user, token }));
         }
