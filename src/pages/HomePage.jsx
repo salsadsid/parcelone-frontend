@@ -25,14 +25,14 @@ const HomePage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <nav className="bg-white shadow-sm p-4">
+        <div className="min-h-screen bg-background text-foreground">
+            <nav className="bg-card shadow-sm p-4 border-b">
                 <div className="max-w-7xl mx-auto flex justify-between items-center">
-                    <h1 className="text-xl font-bold text-gray-900">ParcelOne</h1>
+                    <h1 className="text-xl font-bold text-primary">ParcelOne</h1>
                     {user ? (
                         <div className="flex items-center gap-4">
                             <ThemeToggle />
-                            <span className="text-sm text-gray-600 dark:text-gray-300">
+                            <span className="text-sm text-muted-foreground">
                                 {user.name} ({user.role})
                             </span>
                             <Button onClick={() => {
@@ -61,8 +61,8 @@ const HomePage = () => {
                     renderDashboard()
                 ) : (
                     <div className="text-center py-20">
-                        <h2 className="text-4xl font-bold text-gray-900 mb-4">Welcome to ParcelOne</h2>
-                        <p className="text-xl text-gray-600 mb-8">Efficient Courier Tracking & Parcel Management</p>
+                        <h2 className="text-4xl font-bold text-foreground mb-4">Welcome to ParcelOne</h2>
+                        <p className="text-xl text-muted-foreground mb-8">Efficient Courier Tracking & Parcel Management</p>
                         <div className="space-x-4">
                             <Link to="/login"><Button size="lg">Get Started</Button></Link>
                         </div>

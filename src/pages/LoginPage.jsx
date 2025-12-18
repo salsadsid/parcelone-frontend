@@ -28,7 +28,7 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+        <div className="min-h-screen flex items-center justify-center bg-background p-4">
             <Card className="w-full max-w-md">
                 <CardHeader>
                     <CardTitle>Login</CardTitle>
@@ -44,7 +44,7 @@ const LoginPage = () => {
                                 placeholder="m@example.com"
                                 {...register('email', { required: 'Email is required' })}
                             />
-                            {errors.email && <span className="text-sm text-red-500">{errors.email.message}</span>}
+                            {errors.email && <span className="text-sm text-destructive">{errors.email.message}</span>}
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="password">Password</Label>
@@ -53,7 +53,7 @@ const LoginPage = () => {
                                 type="password"
                                 {...register('password', { required: 'Password is required' })}
                             />
-                            {errors.password && <span className="text-sm text-red-500">{errors.password.message}</span>}
+                            {errors.password && <span className="text-sm text-destructive">{errors.password.message}</span>}
                         </div>
                         <Button type="submit" className="w-full" disabled={isLoading}>
                             {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Login'}
@@ -61,7 +61,7 @@ const LoginPage = () => {
                     </form>
                 </CardContent>
                 <CardFooter className="justify-center">
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-muted-foreground">
                         Don't have an account? <Link to="/register" className="text-primary hover:underline">Register</Link>
                     </p>
                 </CardFooter>

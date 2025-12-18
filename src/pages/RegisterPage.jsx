@@ -27,7 +27,7 @@ const RegisterPage = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+        <div className="min-h-screen flex items-center justify-center bg-background p-4">
             <Card className="w-full max-w-md">
                 <CardHeader>
                     <CardTitle>Register</CardTitle>
@@ -42,7 +42,7 @@ const RegisterPage = () => {
                                 placeholder="John Doe"
                                 {...register('name', { required: 'Name is required' })}
                             />
-                            {errors.name && <span className="text-sm text-red-500">{errors.name.message}</span>}
+                            {errors.name && <span className="text-sm text-destructive">{errors.name.message}</span>}
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="email">Email</Label>
@@ -52,7 +52,7 @@ const RegisterPage = () => {
                                 placeholder="m@example.com"
                                 {...register('email', { required: 'Email is required' })}
                             />
-                            {errors.email && <span className="text-sm text-red-500">{errors.email.message}</span>}
+                            {errors.email && <span className="text-sm text-destructive">{errors.email.message}</span>}
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="password">Password</Label>
@@ -61,7 +61,7 @@ const RegisterPage = () => {
                                 type="password"
                                 {...register('password', { required: 'Password is required', minLength: { value: 6, message: 'Password must be at least 6 characters' } })}
                             />
-                            {errors.password && <span className="text-sm text-red-500">{errors.password.message}</span>}
+                            {errors.password && <span className="text-sm text-destructive">{errors.password.message}</span>}
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="role">Role</Label>
@@ -81,7 +81,7 @@ const RegisterPage = () => {
                     </form>
                 </CardContent>
                 <CardFooter className="justify-center">
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-muted-foreground">
                         Already have an account? <Link to="/login" className="text-primary hover:underline">Login</Link>
                     </p>
                 </CardFooter>
