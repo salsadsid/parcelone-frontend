@@ -11,7 +11,7 @@ const defaultCenter = {
     lng: 90.39
 };
 
-function MapComponent({ location, destination, pickup, isAgent }) {
+function MapComponent({ location, destination, pickup, isAgent, onError }) {
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
         googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY
@@ -46,6 +46,7 @@ function MapComponent({ location, destination, pickup, isAgent }) {
                     setPickupLocation(latLng);
                 } else {
                     console.error('Geocode pickup failed: ' + status);
+                    if (onError) onError('Unable to locate pickup address on map');
                 }
             });
         }
@@ -64,6 +65,7 @@ function MapComponent({ location, destination, pickup, isAgent }) {
                     setDestinationLocation(latLng);
                 } else {
                     console.error('Geocode destination failed: ' + status);
+                    if (onError) onError('Unable to locate delivery address on map');
                 }
             });
         }

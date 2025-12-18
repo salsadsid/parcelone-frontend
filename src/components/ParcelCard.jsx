@@ -28,7 +28,8 @@ const ParcelCard = ({
     role = 'customer',
     onStatusUpdate,
     onAssignAgent,
-    agents = []
+    agents = [],
+    isUpdating = false
 }) => {
     const statusColors = {
         pending: 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-900',
@@ -154,8 +155,10 @@ const ParcelCard = ({
                             {role === 'agent' && (
                                 <div className="space-y-3">
                                     <div className="flex items-center gap-2 text-muted-foreground mb-1">
-                                        <Clock size={14} />
-                                        <span className="text-[10px] font-bold uppercase tracking-wider">Update Status</span>
+                                        <Clock size={14} className={isUpdating ? "animate-spin" : ""} />
+                                        <span className="text-[10px] font-bold uppercase tracking-wider">
+                                            {isUpdating ? "Updating Status..." : "Update Status"}
+                                        </span>
                                     </div>
                                     <div className="grid grid-cols-2 gap-2">
                                         {['picked_up', 'in_transit', 'delivered', 'failed'].map((status) => (
@@ -163,6 +166,7 @@ const ParcelCard = ({
                                                 key={status}
                                                 size="sm"
                                                 variant={parcel.status === status ? "default" : "outline"}
+                                                disabled={isUpdating}
                                                 onClick={() => onStatusUpdate(parcel._id, status)}
                                                 className={`text-[10px] h-8 uppercase font-bold tracking-wider ${parcel.status === status ? 'bg-primary shadow-md' : 'hover:bg-primary/5'
                                                     }`}
@@ -172,7 +176,7 @@ const ParcelCard = ({
                                         ))}
                                     </div>
                                     <Link to={`/parcels/${parcel._id}`} className="block pt-1">
-                                        <Button variant="secondary" size="sm" className="w-full text-xs font-bold gap-2">
+                                        <Button variant="secondary" size="sm" className="w-full text-xs font-bold gap-2" disabled={isUpdating}>
                                             <MapPin size={14} />
                                             View Route & Details
                                         </Button>
@@ -183,12 +187,15 @@ const ParcelCard = ({
                             {role === 'admin' && (
                                 <div className="space-y-3">
                                     <div className="flex items-center gap-2 text-muted-foreground mb-1">
-                                        <User size={14} />
-                                        <span className="text-[10px] font-bold uppercase tracking-wider">Assign Delivery Agent</span>
+                                        <User size={14} className={isUpdating ? "animate-spin" : ""} />
+                                        <span className="text-[10px] font-bold uppercase tracking-wider">
+                                            {isUpdating ? "Assigning Agent..." : "Assign Delivery Agent"}
+                                        </span>
                                     </div>
                                     <Select
                                         defaultValue={parcel.assignedAgent?._id || ""}
                                         onValueChange={(value) => onAssignAgent(parcel._id, value)}
+                                        disabled={isUpdating}
                                     >
                                         <SelectTrigger className="w-full h-10 bg-background/50 border-primary/10 focus:ring-primary/20">
                                             <SelectValue placeholder="Select Agent" />

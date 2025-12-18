@@ -1,4 +1,5 @@
 import { useGetParcelsQuery, useUpdateParcelStatusMutation } from '@/features/auth/parcelApiSlice';
+import { useState } from 'react';
 import Loading from '@/components/Loading';
 import ParcelCard from '@/components/ParcelCard';
 import { Package } from 'lucide-react';
@@ -7,11 +8,17 @@ const AgentDashboard = () => {
     const { data: parcels, isLoading } = useGetParcelsQuery();
     const [updateStatus] = useUpdateParcelStatusMutation();
 
+    const [updatingId, setUpdatingId] = useState(null);
+
     const handleStatusUpdate = async (id, status) => {
+        setUpdatingId(id);
         try {
             await updateStatus({ id, status }).unwrap();
         } catch (err) {
             console.error('Failed to update status:', err);
+            alert('Failed to update status. Please try again.');
+        } finally {
+            setUpdatingId(null);
         }
     };
 
@@ -27,6 +34,7 @@ const AgentDashboard = () => {
                         parcel={parcel}
                         role="agent"
                         onStatusUpdate={handleStatusUpdate}
+                        isUpdating={updatingId === parcel._id}
                     />
                 ))}
                 {parcels?.length === 0 && (

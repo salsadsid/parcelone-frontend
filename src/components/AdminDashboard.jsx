@@ -1,4 +1,5 @@
 import { useGetParcelsQuery, useGetMetricsQuery, useGetAgentsQuery, useAssignAgentMutation } from '@/features/auth/parcelApiSlice';
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Loading from '@/components/Loading';
 import ParcelCard from '@/components/ParcelCard';
@@ -8,16 +9,21 @@ const AdminDashboard = () => {
     const { data: parcels, isLoading: isLoadingParcels } = useGetParcelsQuery();
     const { data: metrics, isLoading: isLoadingMetrics } = useGetMetricsQuery();
     const { data: agents } = useGetAgentsQuery();
+    const [assigningId, setAssigningId] = useState(null);
     const [assignAgent] = useAssignAgentMutation();
 
     if (isLoadingParcels || isLoadingMetrics) return <Loading fullScreen={false} />;
 
     const handleAssign = async (parcelId, agentId) => {
         if (!agentId) return;
+        setAssigningId(parcelId);
         try {
             await assignAgent({ id: parcelId, agentId }).unwrap();
         } catch (err) {
             console.error('Failed to assign agent:', err);
+            alert('Failed to assign agent. Please try again.');
+        } finally {
+            setAssigningId(null);
         }
     };
 
@@ -56,6 +62,7 @@ const AdminDashboard = () => {
                             role="admin"
                             onAssignAgent={handleAssign}
                             agents={agents}
+                            isUpdating={assigningId === parcel._id}
                         />
                     ))}
                     {parcels?.length === 0 && (
