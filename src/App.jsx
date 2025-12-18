@@ -4,6 +4,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ParcelDetailsPage from './pages/ParcelDetailsPage';
 import BookParcelPage from './pages/BookParcelPage';
+import DashboardPage from './pages/DashboardPage';
 
 import PersistLogin from './components/PersistLogin';
 import Layout from './components/Layout';
@@ -15,6 +16,7 @@ function App() {
                 <Route element={<PersistLogin />}>
                     <Route element={<Layout />}>
                         <Route path="/" element={<HomePage />} />
+                        <Route path="/dashboard" element={<DashboardPage />} />
                         <Route path="/book-parcel" element={<BookParcelPage />} />
                         <Route path="/parcels/:id" element={<ParcelDetailsPage />} />
                     </Route>

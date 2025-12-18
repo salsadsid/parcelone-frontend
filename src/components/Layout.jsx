@@ -19,6 +19,9 @@ const Layout = () => {
                     </Link>
                     {user ? (
                         <div className="flex items-center gap-4">
+                            <Link to="/dashboard">
+                                <Button variant="ghost">Dashboard</Button>
+                            </Link>
                             <ThemeToggle />
                             <span className="text-sm text-muted-foreground">
                                 {user.name} ({user.role})
