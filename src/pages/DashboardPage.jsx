@@ -8,6 +8,8 @@ const DashboardPage = () => {
     const user = useSelector(selectCurrentUser);
 
     const renderDashboard = () => {
+        if (!user) return null;
+
         switch (user.role) {
             case 'admin':
                 return <AdminDashboard />;
