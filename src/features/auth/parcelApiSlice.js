@@ -54,6 +54,13 @@ export const parcelApiSlice = apiSlice.injectEndpoints({
         getAgents: builder.query({
             query: () => '/parcels/agents',
         }),
+        updateLocation: builder.mutation({
+            query: ({ id, location }) => ({
+                url: `/parcels/${id}/location`,
+                method: 'PUT',
+                body: { location },
+            }),
+        }),
     }),
 });
 
@@ -64,4 +71,5 @@ export const {
     useAssignAgentMutation,
     useGetMetricsQuery,
     useGetAgentsQuery,
+    useUpdateLocationMutation,
 } = parcelApiSlice;

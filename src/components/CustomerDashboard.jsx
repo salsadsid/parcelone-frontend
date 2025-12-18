@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useGetParcelsQuery, useCreateParcelMutation } from '@/features/auth/parcelApiSlice';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -96,6 +97,9 @@ const CustomerDashboard = () => {
                             <div className="text-right">
                                 <p className="font-bold">${parcel.cost}</p>
                                 <p className="text-sm text-gray-500">{parcel.paymentMode.toUpperCase()}</p>
+                                <Link to={`/parcels/${parcel._id}`}>
+                                    <Button size="sm" variant="outline" className="mt-2">Track</Button>
+                                </Link>
                             </div>
                         </CardContent>
                     </Card>
