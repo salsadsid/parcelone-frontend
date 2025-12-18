@@ -2,7 +2,7 @@ import { useGetParcelsQuery, useUpdateParcelStatusMutation } from '@/features/au
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { MapPin } from 'lucide-react';
+import { MapPin, Calendar } from 'lucide-react';
 import Loading from '@/components/Loading';
 
 const AgentDashboard = () => {
@@ -29,12 +29,18 @@ const AgentDashboard = () => {
                             <div className="flex justify-between items-start">
                                 <div>
                                     <p className="text-sm font-mono text-muted-foreground">{parcel._id.slice(-8).toUpperCase()}</p>
-                                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border mt-2 ${parcel.status === 'delivered' ? 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-900' :
-                                        parcel.status === 'failed' ? 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-900' :
-                                            'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-900'
-                                        }`}>
-                                        {parcel.status.replace('_', ' ').toUpperCase()}
-                                    </span>
+                                    <div className="flex items-center gap-2 mt-2">
+                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${parcel.status === 'delivered' ? 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-900' :
+                                            parcel.status === 'failed' ? 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-900' :
+                                                'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-900'
+                                            }`}>
+                                            {parcel.status.replace('_', ' ').toUpperCase()}
+                                        </span>
+                                        <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                                            <Calendar size={10} />
+                                            {new Date(parcel.createdAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}
+                                        </div>
+                                    </div>
                                 </div>
                                 <Link to={`/parcels/${parcel._id}`}>
                                     <Button size="sm" variant="outline" className="gap-2">

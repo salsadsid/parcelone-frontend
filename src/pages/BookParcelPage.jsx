@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCreateParcelMutation } from '@/features/auth/parcelApiSlice';
 import { Button } from '@/components/ui/button';
@@ -17,7 +18,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const BookParcelPage = () => {
     const [createParcel, { isLoading: isCreating }] = useCreateParcelMutation();
-    const { register, handleSubmit, control, formState: { errors } } = useForm({
+    const { register, handleSubmit, control, setValue, formState: { errors } } = useForm({
         defaultValues: {
             paymentMode: 'prepaid',
             parcelType: '',
@@ -32,6 +33,25 @@ const BookParcelPage = () => {
 
     // Watch form values for the summary card
     const formValues = useWatch({ control });
+
+    // Pricing Logic
+    const BASE_PRICE = 15;
+    const KM_RATE = 2;
+    const [isManualPrice, setIsManualPrice] = useState(false);
+
+    const calculateEstimatedDistance = (addr1, addr2) => {
+        if (!addr1 || !addr2) return 0;
+        // Simple deterministic heuristic for demo purposes
+        return (addr1.length + addr2.length) % 15 + 5;
+    };
+
+    useEffect(() => {
+        if (!isManualPrice && formValues.pickupAddress && formValues.deliveryAddress) {
+            const distance = calculateEstimatedDistance(formValues.pickupAddress, formValues.deliveryAddress);
+            const estimatedCost = BASE_PRICE + (distance * KM_RATE);
+            setValue('cost', estimatedCost.toString());
+        }
+    }, [formValues.pickupAddress, formValues.deliveryAddress, isManualPrice, setValue]);
 
     const onSubmit = async (data) => {
         try {
@@ -270,7 +290,12 @@ const BookParcelPage = () => {
                                             <span className="text-sm font-bold capitalize text-primary">{formValues.paymentMode}</span>
                                         </div>
                                         <div className="flex items-center justify-between text-lg font-bold">
-                                            <span>Total Cost</span>
+                                            <div className="flex flex-col">
+                                                <span>Total Cost</span>
+                                                {!isManualPrice && formValues.pickupAddress && formValues.deliveryAddress && (
+                                                    <span className="text-[10px] text-muted-foreground font-normal">Estimated Median Cost</span>
+                                                )}
+                                            </div>
                                             <span className="text-primary">${formValues.cost || '0.00'}</span>
                                         </div>
                                     </div>

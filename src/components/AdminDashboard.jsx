@@ -9,7 +9,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { User, MapPin } from 'lucide-react';
+import { User, MapPin, Calendar } from 'lucide-react';
 import Loading from '@/components/Loading';
 
 const AdminDashboard = () => {
@@ -65,12 +65,18 @@ const AdminDashboard = () => {
                                         <p className="text-sm font-medium text-muted-foreground">Tracking ID</p>
                                         <p className="font-mono text-sm">{parcel._id.slice(-8).toUpperCase()}</p>
                                     </div>
-                                    <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${parcel.status === 'delivered' ? 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-900' :
-                                        parcel.status === 'failed' ? 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-900' :
-                                            'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-900'
-                                        }`}>
-                                        {parcel.status.replace('_', ' ').toUpperCase()}
-                                    </span>
+                                    <div className="text-right space-y-1">
+                                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${parcel.status === 'delivered' ? 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-900' :
+                                            parcel.status === 'failed' ? 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-900' :
+                                                'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-900'
+                                            }`}>
+                                            {parcel.status.replace('_', ' ').toUpperCase()}
+                                        </span>
+                                        <div className="flex items-center gap-1 text-[10px] text-muted-foreground justify-end">
+                                            <Calendar size={10} />
+                                            {new Date(parcel.createdAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div className="space-y-2 py-2 border-t border-b">
