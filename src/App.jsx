@@ -9,6 +9,7 @@ import DashboardPage from './pages/DashboardPage';
 import PersistLogin from './components/PersistLogin';
 import Layout from './components/Layout';
 import RequireAuth from './components/RequireAuth';
+import GuestRoute from './components/GuestRoute';
 
 function App() {
     return (
@@ -25,8 +26,11 @@ function App() {
                             <Route path="/parcels/:id" element={<ParcelDetailsPage />} />
                         </Route>
                     </Route>
-                    <Route path="/login" element={<LoginPage />} />
-                    <Route path="/register" element={<RegisterPage />} />
+                    {/* Guest Routes */}
+                    <Route element={<GuestRoute />}>
+                        <Route path="/login" element={<LoginPage />} />
+                        <Route path="/register" element={<RegisterPage />} />
+                    </Route>
                 </Route>
             </Routes>
         </Router>
