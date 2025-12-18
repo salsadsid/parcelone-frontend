@@ -6,6 +6,7 @@ import { apiSlice } from '@/features/auth/authApiSlice';
 import CustomerDashboard from '@/components/CustomerDashboard';
 import AgentDashboard from '@/components/AgentDashboard';
 import AdminDashboard from '@/components/AdminDashboard';
+import ThemeToggle from '@/components/ThemeToggle';
 
 const HomePage = () => {
     const user = useSelector(selectCurrentUser);
@@ -30,7 +31,8 @@ const HomePage = () => {
                     <h1 className="text-xl font-bold text-gray-900">ParcelOne</h1>
                     {user ? (
                         <div className="flex items-center gap-4">
-                            <span className="text-sm text-gray-600">
+                            <ThemeToggle />
+                            <span className="text-sm text-gray-600 dark:text-gray-300">
                                 {user.name} ({user.role})
                             </span>
                             <Button onClick={() => {
@@ -45,7 +47,8 @@ const HomePage = () => {
                             </Button>
                         </div>
                     ) : (
-                        <div className="space-x-4">
+                        <div className="space-x-4 flex items-center">
+                            <ThemeToggle />
                             <Link to="/login"><Button variant="ghost">Login</Button></Link>
                             <Link to="/register"><Button>Register</Button></Link>
                         </div>
