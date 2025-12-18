@@ -28,9 +28,9 @@ const BookParcelPage = () => {
             receiverPhone: '',
             cost: '',
             weight: '0.5',
-            length: '',
-            width: '',
-            height: ''
+            length: '15',
+            width: '15',
+            height: '5'
         }
     });
     const navigate = useNavigate();
@@ -258,28 +258,51 @@ const BookParcelPage = () => {
                                                 initial={{ opacity: 0, height: 0 }}
                                                 animate={{ opacity: 1, height: 'auto' }}
                                                 exit={{ opacity: 0, height: 0 }}
-                                                className="space-y-4 pt-4 border-t border-dashed"
+                                                className="space-y-6 pt-4 border-t border-dashed"
                                             >
                                                 <div className="flex items-center justify-between">
-                                                    <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Dimensions (cm)</Label>
+                                                    <div className="space-y-1">
+                                                        <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Dimensions (cm)</Label>
+                                                        <p className="text-[10px] text-muted-foreground">Select a preset or enter custom values</p>
+                                                    </div>
                                                     <div className="flex gap-2">
                                                         <Button type="button" variant="outline" size="sm" className="h-7 text-[10px] px-2" onClick={() => setBoxPreset(15, 15, 5, 1)}>Small</Button>
                                                         <Button type="button" variant="outline" size="sm" className="h-7 text-[10px] px-2" onClick={() => setBoxPreset(30, 30, 20, 5)}>Medium</Button>
                                                         <Button type="button" variant="outline" size="sm" className="h-7 text-[10px] px-2" onClick={() => setBoxPreset(50, 50, 40, 15)}>Large</Button>
                                                     </div>
                                                 </div>
-                                                <div className="grid grid-cols-3 gap-4">
-                                                    <div className="space-y-1.5">
-                                                        <Label htmlFor="length" className="text-[10px]">Length</Label>
-                                                        <Input id="length" type="number" placeholder="L" {...register('length')} className="h-9 bg-background/50" />
+
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                                                    <div className="grid grid-cols-3 gap-4">
+                                                        <div className="space-y-1.5">
+                                                            <Label htmlFor="length" className="text-[10px]">Length (L)</Label>
+                                                            <Input id="length" type="number" placeholder="L" {...register('length')} className="h-9 bg-background/50" />
+                                                        </div>
+                                                        <div className="space-y-1.5">
+                                                            <Label htmlFor="width" className="text-[10px]">Width (W)</Label>
+                                                            <Input id="width" type="number" placeholder="W" {...register('width')} className="h-9 bg-background/50" />
+                                                        </div>
+                                                        <div className="space-y-1.5">
+                                                            <Label htmlFor="height" className="text-[10px]">Height (H)</Label>
+                                                            <Input id="height" type="number" placeholder="H" {...register('height')} className="h-9 bg-background/50" />
+                                                        </div>
                                                     </div>
-                                                    <div className="space-y-1.5">
-                                                        <Label htmlFor="width" className="text-[10px]">Width</Label>
-                                                        <Input id="width" type="number" placeholder="W" {...register('width')} className="h-9 bg-background/50" />
-                                                    </div>
-                                                    <div className="space-y-1.5">
-                                                        <Label htmlFor="height" className="text-[10px]">Height</Label>
-                                                        <Input id="height" type="number" placeholder="H" {...register('height')} className="h-9 bg-background/50" />
+
+                                                    {/* Visual Guide */}
+                                                    <div className="bg-muted/30 rounded-xl p-4 border border-primary/5 flex flex-col items-center gap-3">
+                                                        <div className="relative w-24 h-20">
+                                                            {/* Simple CSS Box Diagram */}
+                                                            <div className="absolute inset-0 border-2 border-primary/40 rounded-sm flex items-center justify-center">
+                                                                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 text-[8px] font-bold text-primary">LENGTH</div>
+                                                                <div className="absolute -right-6 top-1/2 -translate-y-1/2 rotate-90 text-[8px] font-bold text-primary">WIDTH</div>
+                                                                <div className="absolute -left-6 top-1/2 -translate-y-1/2 -rotate-90 text-[8px] font-bold text-primary">HEIGHT</div>
+                                                                <Package size={32} className="text-primary/20" />
+                                                            </div>
+                                                        </div>
+                                                        <div className="text-center">
+                                                            <p className="text-[10px] font-bold text-foreground">How to Measure</p>
+                                                            <p className="text-[9px] text-muted-foreground leading-tight">Measure the longest sides of your package in centimeters.</p>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </motion.div>
@@ -289,13 +312,15 @@ const BookParcelPage = () => {
                                     <div className="pt-4 border-t">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                             <div className="space-y-2">
-                                                <Label>Payment Mode</Label>
+                                                <div className="flex items-center h-6">
+                                                    <Label>Payment Mode</Label>
+                                                </div>
                                                 <Controller
                                                     name="paymentMode"
                                                     control={control}
                                                     render={({ field }) => (
                                                         <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                            <SelectTrigger className="bg-background/50">
+                                                            <SelectTrigger className="h-10 bg-background/50">
                                                                 <SelectValue placeholder="Select mode" />
                                                             </SelectTrigger>
                                                             <SelectContent>
@@ -307,7 +332,7 @@ const BookParcelPage = () => {
                                                 />
                                             </div>
                                             <div className="space-y-2">
-                                                <div className="flex justify-between items-center">
+                                                <div className="flex justify-between items-center h-6">
                                                     <Label htmlFor="cost">Final Cost ($)</Label>
                                                     {isManualPrice && (
                                                         <button
@@ -327,7 +352,7 @@ const BookParcelPage = () => {
                                                         required: 'Cost is required',
                                                         onChange: () => setIsManualPrice(true)
                                                     })}
-                                                    className={`bg-background/50 ${isManualPrice ? 'border-amber-500/50 focus-visible:ring-amber-500' : ''}`}
+                                                    className={`h-10 bg-background/50 ${isManualPrice ? 'border-amber-500/50 focus-visible:ring-amber-500' : ''}`}
                                                 />
                                                 {errors.cost && <span className="text-xs text-destructive">{errors.cost.message}</span>}
                                             </div>
@@ -434,11 +459,11 @@ const BookParcelPage = () => {
                         </Card>
 
                         {/* Help Card */}
-                        <div className="p-6 rounded-3xl bg-zinc-900 text-white space-y-4 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-2xl -mr-16 -mt-16" />
+                        <div className="p-6 rounded-3xl bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white space-y-4 relative overflow-hidden border border-zinc-200 dark:border-transparent">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 dark:bg-primary/20 rounded-full blur-2xl -mr-16 -mt-16" />
                             <h4 className="font-bold relative z-10">Need Help?</h4>
-                            <p className="text-xs text-zinc-400 relative z-10">Our support team is available 24/7 to assist with your booking.</p>
-                            <Button variant="outline" size="sm" className="w-full border-white/20 hover:bg-white/10 text-white relative z-10">
+                            <p className="text-xs text-zinc-500 dark:text-zinc-400 relative z-10">Our support team is available 24/7 to assist with your booking.</p>
+                            <Button variant="outline" size="sm" className="w-full border-zinc-300 dark:border-white/20 hover:bg-zinc-200 dark:hover:bg-white/10 text-zinc-900 dark:text-white relative z-10">
                                 Contact Support
                             </Button>
                         </div>
