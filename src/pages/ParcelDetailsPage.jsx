@@ -6,6 +6,7 @@ import MapComponent from '@/components/MapComponent';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
+import Loading from '@/components/Loading';
 
 const ParcelDetailsPage = () => {
     const { id } = useParams();
@@ -78,7 +79,7 @@ const ParcelDetailsPage = () => {
         return () => clearInterval(interval);
     };
 
-    if (!parcel) return <div>Loading...</div>;
+    if (!parcel) return <Loading />;
 
     const isAgent = user.role === 'agent';
 

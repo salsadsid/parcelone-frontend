@@ -9,12 +9,16 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { User, MapPin } from 'lucide-react';
+import Loading from '@/components/Loading';
 
 const AdminDashboard = () => {
-    const { data: parcels } = useGetParcelsQuery();
-    const { data: metrics } = useGetMetricsQuery();
+    const { data: parcels, isLoading: isLoadingParcels } = useGetParcelsQuery();
+    const { data: metrics, isLoading: isLoadingMetrics } = useGetMetricsQuery();
     const { data: agents } = useGetAgentsQuery();
     const [assignAgent] = useAssignAgentMutation();
+
+    if (isLoadingParcels || isLoadingMetrics) return <Loading />;
 
     const handleAssign = async (parcelId, agentId) => {
         if (!agentId) return;
@@ -51,23 +55,43 @@ const AdminDashboard = () => {
 
             {/* All Parcels */}
             <div className="space-y-4">
-                <h3 className="text-xl font-semibold">All Parcels</h3>
-                <div className="grid gap-4">
+                <h3 className="text-xl font-semibold text-foreground">All Parcels</h3>
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {parcels?.map((parcel) => (
-                        <Card key={parcel._id}>
-                            <CardContent className="p-4 flex justify-between items-center">
-                                <div>
-                                    <p className="font-semibold">ID: {parcel._id.slice(-6)}</p>
-                                    <p className="text-sm">From: {parcel.sender?.name}</p>
-                                    <p className="text-sm">Status: {parcel.status}</p>
+                        <Card key={parcel._id} className="hover:shadow-md transition-shadow">
+                            <CardContent className="p-6 space-y-4">
+                                <div className="flex justify-between items-start">
+                                    <div className="space-y-1">
+                                        <p className="text-sm font-medium text-muted-foreground">Tracking ID</p>
+                                        <p className="font-mono text-sm">{parcel._id.slice(-8).toUpperCase()}</p>
+                                    </div>
+                                    <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${parcel.status === 'delivered' ? 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-900' :
+                                        parcel.status === 'failed' ? 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-900' :
+                                            'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-900'
+                                        }`}>
+                                        {parcel.status.replace('_', ' ').toUpperCase()}
+                                    </span>
                                 </div>
-                                <div className="flex items-center gap-2">
+
+                                <div className="space-y-2 py-2 border-t border-b">
+                                    <div className="flex items-center gap-2">
+                                        <User className="w-4 h-4 text-muted-foreground" />
+                                        <span className="text-sm">From: <span className="font-medium">{parcel.sender?.name}</span></span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <MapPin className="w-4 h-4 text-muted-foreground" />
+                                        <span className="text-sm truncate" title={parcel.deliveryAddress}>To: {parcel.deliveryAddress}</span>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <p className="text-xs font-medium text-muted-foreground">Assign Agent</p>
                                     <Select
                                         defaultValue={parcel.assignedAgent?._id || ""}
                                         onValueChange={(value) => handleAssign(parcel._id, value)}
                                     >
-                                        <SelectTrigger className="w-[180px]">
-                                            <SelectValue placeholder="Assign Agent" />
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="Select Agent" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             {agents?.map(agent => (

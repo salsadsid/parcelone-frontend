@@ -13,6 +13,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import Loading from '@/components/Loading';
 
 const BookParcelPage = () => {
     const [createParcel, { isLoading: isCreating }] = useCreateParcelMutation();
