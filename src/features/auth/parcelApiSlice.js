@@ -1,10 +1,27 @@
 import { apiSlice } from './authApiSlice';
 
+import { io } from 'socket.io-client';
+
 export const parcelApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         getParcels: builder.query({
             query: () => '/parcels',
             providesTags: ['Parcel'],
+            async onCacheEntryAdded(arg, { cacheDataLoaded, cacheEntryRemoved, dispatch }) {
+                try {
+                    await cacheDataLoaded;
+                    const socket = io('http://localhost:5000');
+
+                    socket.on('parcelUpdated', () => {
+                        dispatch(apiSlice.util.invalidateTags(['Parcel', 'Metrics']));
+                    });
+
+                    await cacheEntryRemoved;
+                    socket.close();
+                } catch {
+                    // no-op
+                }
+            },
         }),
         createParcel: builder.mutation({
             query: (parcelData) => ({
