@@ -8,7 +8,7 @@ import Loading from '@/components/Loading';
 const CustomerDashboard = () => {
     const { data: parcels, isLoading } = useGetParcelsQuery();
 
-    if (isLoading) return <Loading />;
+    if (isLoading) return <Loading fullScreen={false} />;
 
     return (
         <div className="space-y-6">

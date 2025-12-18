@@ -17,7 +17,7 @@ const AgentDashboard = () => {
         }
     };
 
-    if (isLoading) return <Loading />;
+    if (isLoading) return <Loading fullScreen={false} />;
 
     return (
         <div className="space-y-6">

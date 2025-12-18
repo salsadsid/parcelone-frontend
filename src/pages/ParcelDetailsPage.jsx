@@ -13,7 +13,7 @@ const ParcelDetailsPage = () => {
     const { data: parcels } = useGetParcelsQuery();
     const parcel = parcels?.find(p => p._id === id);
     const user = useSelector(selectCurrentUser);
-    const [updateLocation] = useUpdateLocationMutation();
+    const [updateLocation, { isLoading }] = useUpdateLocationMutation();
 
     const [currentLocation, setCurrentLocation] = useState(parcel?.currentLocation || null);
     const [isTracking, setIsTracking] = useState(false);
@@ -79,7 +79,7 @@ const ParcelDetailsPage = () => {
         return () => clearInterval(interval);
     };
 
-    if (!parcel) return <Loading />;
+    if (isLoading) return <Loading fullScreen={false} />;
 
     const isAgent = user.role === 'agent';
 

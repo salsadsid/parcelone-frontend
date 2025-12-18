@@ -18,7 +18,7 @@ const AdminDashboard = () => {
     const { data: agents } = useGetAgentsQuery();
     const [assignAgent] = useAssignAgentMutation();
 
-    if (isLoadingParcels || isLoadingMetrics) return <Loading />;
+    if (isLoadingParcels || isLoadingMetrics) return <Loading fullScreen={false} />;
 
     const handleAssign = async (parcelId, agentId) => {
         if (!agentId) return;
