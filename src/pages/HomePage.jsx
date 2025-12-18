@@ -1,7 +1,8 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectCurrentUser, logOut } from '@/features/auth/authSlice';
+import { apiSlice } from '@/features/auth/authApiSlice';
 import CustomerDashboard from '@/components/CustomerDashboard';
 import AgentDashboard from '@/components/AgentDashboard';
 import AdminDashboard from '@/components/AdminDashboard';
@@ -9,6 +10,7 @@ import AdminDashboard from '@/components/AdminDashboard';
 const HomePage = () => {
     const user = useSelector(selectCurrentUser);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const renderDashboard = () => {
         switch (user.role) {
@@ -31,7 +33,14 @@ const HomePage = () => {
                             <span className="text-sm text-gray-600">
                                 {user.name} ({user.role})
                             </span>
-                            <Button onClick={() => dispatch(logOut())} variant="destructive" size="sm">
+                            <Button onClick={() => {
+                                console.log('Logout clicked');
+                                dispatch(apiSlice.util.resetApiState());
+                                console.log('Reset API state dispatched');
+                                dispatch(logOut());
+                                console.log('Logout dispatched');
+                                navigate('/login');
+                            }} variant="destructive" size="sm">
                                 Logout
                             </Button>
                         </div>

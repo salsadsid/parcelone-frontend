@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useGetMeQuery } from '@/features/auth/authApiSlice';
 import { setCredentials, selectCurrentToken } from '@/features/auth/authSlice';
 import { Outlet } from 'react-router-dom';
+import Loading from './Loading';
 
 const PersistLogin = () => {
     const token = useSelector(selectCurrentToken);
@@ -14,13 +15,15 @@ const PersistLogin = () => {
     });
 
     useEffect(() => {
+        console.log('PersistLogin effect:', { isSuccess, hasUser: !!user, token });
         if (isSuccess && user) {
+            console.log('PersistLogin dispatching setCredentials');
             dispatch(setCredentials({ user, token }));
         }
     }, [isSuccess, user, token, dispatch]);
 
     if (isLoading) {
-        return <div>Loading...</div>; // Or a proper loading spinner
+        return <Loading />
     }
 
     return <Outlet />;
