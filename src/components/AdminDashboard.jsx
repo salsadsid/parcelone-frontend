@@ -5,6 +5,8 @@ import Loading from '@/components/Loading';
 import ParcelCard from '@/components/ParcelCard';
 import { Package } from 'lucide-react';
 
+import { toast } from 'sonner';
+
 const AdminDashboard = () => {
     const { data: parcels, isLoading: isLoadingParcels } = useGetParcelsQuery();
     const { data: metrics, isLoading: isLoadingMetrics } = useGetMetricsQuery();
@@ -19,9 +21,10 @@ const AdminDashboard = () => {
         setAssigningId(parcelId);
         try {
             await assignAgent({ id: parcelId, agentId }).unwrap();
+            toast.success('Agent assigned successfully!');
         } catch (err) {
             console.error('Failed to assign agent:', err);
-            alert('Failed to assign agent. Please try again.');
+            toast.error('Failed to assign agent. Please try again.');
         } finally {
             setAssigningId(null);
         }

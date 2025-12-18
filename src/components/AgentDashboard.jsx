@@ -4,6 +4,8 @@ import Loading from '@/components/Loading';
 import ParcelCard from '@/components/ParcelCard';
 import { Package } from 'lucide-react';
 
+import { toast } from 'sonner';
+
 const AgentDashboard = () => {
     const { data: parcels, isLoading } = useGetParcelsQuery();
     const [updateStatus] = useUpdateParcelStatusMutation();
@@ -14,9 +16,10 @@ const AgentDashboard = () => {
         setUpdatingId(id);
         try {
             await updateStatus({ id, status }).unwrap();
+            toast.success('Status updated successfully!');
         } catch (err) {
             console.error('Failed to update status:', err);
-            alert('Failed to update status. Please try again.');
+            toast.error('Failed to update status. Please try again.');
         } finally {
             setUpdatingId(null);
         }

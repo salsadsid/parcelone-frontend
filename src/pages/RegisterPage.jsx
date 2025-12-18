@@ -17,6 +17,8 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
+import { toast } from 'sonner';
+
 const RegisterPage = () => {
     const { register, handleSubmit, control, formState: { errors } } = useForm();
     const [registerUser, { isLoading }] = useRegisterMutation();
@@ -27,10 +29,11 @@ const RegisterPage = () => {
         try {
             const userData = await registerUser(data).unwrap();
             dispatch(setCredentials({ ...userData, user: userData }));
+            toast.success('Account created successfully!');
             navigate('/dashboard');
         } catch (err) {
             console.error('Failed to register:', err);
-            alert(err?.data?.message || 'Registration failed');
+            toast.error(err?.data?.message || 'Registration failed');
         }
     };
 

@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/select"
 import { motion, AnimatePresence } from 'framer-motion';
 
+import { toast } from 'sonner';
+
 const BookParcelPage = () => {
     const [createParcel, { isLoading: isCreating }] = useCreateParcelMutation();
     const { register, handleSubmit, control, setValue, formState: { errors } } = useForm({
@@ -92,10 +94,11 @@ const BookParcelPage = () => {
     const onSubmit = async (data) => {
         try {
             await createParcel(data).unwrap();
+            toast.success('Parcel booked successfully!');
             navigate('/dashboard');
         } catch (err) {
             console.error('Failed to book parcel:', err);
-            alert(err?.data?.message || 'Failed to book parcel');
+            toast.error(err?.data?.message || 'Failed to book parcel');
         }
     };
 

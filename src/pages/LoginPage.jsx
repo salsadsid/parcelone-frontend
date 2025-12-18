@@ -10,6 +10,8 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Loader2, Package, Truck, ShieldCheck, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
+import { toast } from 'sonner';
+
 const LoginPage = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
     const [login, { isLoading }] = useLoginMutation();
@@ -20,10 +22,11 @@ const LoginPage = () => {
         try {
             const userData = await login(data).unwrap();
             dispatch(setCredentials({ ...userData, user: userData }));
+            toast.success('Welcome back!');
             navigate('/dashboard');
         } catch (err) {
             console.error('Failed to login:', err);
-            alert(err?.data?.message || 'Login failed');
+            toast.error(err?.data?.message || 'Login failed');
         }
     };
 

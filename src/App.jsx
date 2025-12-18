@@ -10,30 +10,34 @@ import PersistLogin from './components/PersistLogin';
 import Layout from './components/Layout';
 import RequireAuth from './components/RequireAuth';
 import GuestRoute from './components/GuestRoute';
+import { Toaster } from 'sonner';
 
 function App() {
     return (
-        <Router>
-            <Routes>
-                <Route element={<PersistLogin />}>
-                    <Route element={<Layout />}>
-                        <Route path="/" element={<HomePage />} />
+        <>
+            <Toaster richColors closeButton position="top-right" />
+            <Router>
+                <Routes>
+                    <Route element={<PersistLogin />}>
+                        <Route element={<Layout />}>
+                            <Route path="/" element={<HomePage />} />
 
-                        {/* Protected Routes */}
-                        <Route element={<RequireAuth />}>
-                            <Route path="/dashboard" element={<DashboardPage />} />
-                            <Route path="/book-parcel" element={<BookParcelPage />} />
-                            <Route path="/parcels/:id" element={<ParcelDetailsPage />} />
+                            {/* Protected Routes */}
+                            <Route element={<RequireAuth />}>
+                                <Route path="/dashboard" element={<DashboardPage />} />
+                                <Route path="/book-parcel" element={<BookParcelPage />} />
+                                <Route path="/parcels/:id" element={<ParcelDetailsPage />} />
+                            </Route>
+                        </Route>
+                        {/* Guest Routes */}
+                        <Route element={<GuestRoute />}>
+                            <Route path="/login" element={<LoginPage />} />
+                            <Route path="/register" element={<RegisterPage />} />
                         </Route>
                     </Route>
-                    {/* Guest Routes */}
-                    <Route element={<GuestRoute />}>
-                        <Route path="/login" element={<LoginPage />} />
-                        <Route path="/register" element={<RegisterPage />} />
-                    </Route>
-                </Route>
-            </Routes>
-        </Router>
+                </Routes>
+            </Router>
+        </>
     );
 }
 
