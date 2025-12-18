@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from 'react';
-import { GoogleMap, useJsApiLoader, Marker, DirectionsRenderer } from '@react-google-maps/api';
+import React, { useState, useCallback, useEffect } from 'react';
+import { GoogleMap, useJsApiLoader, MarkerF, DirectionsRenderer } from '@react-google-maps/api';
 
 const containerStyle = {
     width: '100%',
@@ -7,11 +7,11 @@ const containerStyle = {
 };
 
 const defaultCenter = {
-    lat: -3.745,
-    lng: -38.523
+    lat: ~23.77,
+    lng: 90.39
 };
 
-function MapComponent({ location, destination, isAgent }) {
+function MapComponent({ location, destination, pickup, isAgent }) {
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
         googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY
@@ -19,33 +19,80 @@ function MapComponent({ location, destination, isAgent }) {
 
     const [map, setMap] = useState(null);
     const [directionsResponse, setDirectionsResponse] = useState(null);
+    const [pickupLocation, setPickupLocation] = useState(null);
+    const [destinationLocation, setDestinationLocation] = useState(null);
+
+    console.log('MapComponent render:', { location, pickup, destination, isLoaded, isAgent });
 
     const onLoad = useCallback(function callback(map) {
-        const bounds = new window.google.maps.LatLngBounds();
-        if (location) {
-            bounds.extend(location);
-        }
-        if (destination) {
-            // Geocode destination string to lat/lng if needed, or assume destination is lat/lng object
-            // For simplicity, we'll assume destination is passed as coordinates for now or handle string later
-            // If destination is a string address, we'd need Geocoding service.
-            // For this MVP, let's assume we might need to fetch coordinates for address.
-        }
-        map.fitBounds(bounds);
         setMap(map);
-    }, [location, destination]);
+    }, []);
 
     const onUnmount = useCallback(function callback(map) {
         setMap(null);
     }, []);
 
-    React.useEffect(() => {
-        if (isLoaded && isAgent && location && destination) {
+    // Geocode pickup address if location is missing
+    useEffect(() => {
+        if (isLoaded && !location && pickup && !pickupLocation) {
+            const geocoder = new window.google.maps.Geocoder();
+            geocoder.geocode({ address: pickup }, (results, status) => {
+                if (status === 'OK') {
+                    const latLng = {
+                        lat: results[0].geometry.location.lat(),
+                        lng: results[0].geometry.location.lng()
+                    };
+                    console.log('Geocoded pickup:', latLng);
+                    setPickupLocation(latLng);
+                } else {
+                    console.error('Geocode pickup failed: ' + status);
+                }
+            });
+        }
+    }, [isLoaded, location, pickup, pickupLocation]);
+
+    // Geocode destination address
+    useEffect(() => {
+        if (isLoaded && destination && !destinationLocation) {
+            const geocoder = new window.google.maps.Geocoder();
+            geocoder.geocode({ address: destination }, (results, status) => {
+                if (status === 'OK') {
+                    const latLng = {
+                        lat: results[0].geometry.location.lat(),
+                        lng: results[0].geometry.location.lng()
+                    };
+                    setDestinationLocation(latLng);
+                } else {
+                    console.error('Geocode destination failed: ' + status);
+                }
+            });
+        }
+    }, [isLoaded, destination, destinationLocation]);
+
+    // Fit bounds to include displayLocation and destinationLocation
+    useEffect(() => {
+        if (map && (location || pickupLocation) && destinationLocation) {
+            const bounds = new window.google.maps.LatLngBounds();
+            const start = location || pickupLocation;
+
+            bounds.extend(start);
+            bounds.extend(destinationLocation);
+
+            map.fitBounds(bounds);
+        } else if (map && (location || pickupLocation)) {
+            map.panTo(location || pickupLocation);
+        }
+    }, [map, location, pickupLocation, destinationLocation]);
+
+    useEffect(() => {
+        if (isLoaded && isAgent && (location || pickupLocation) && destination) {
             const directionsService = new window.google.maps.DirectionsService();
+            const origin = location || pickupLocation;
+
             directionsService.route(
                 {
-                    origin: location,
-                    destination: destination, // Address string works here
+                    origin: origin,
+                    destination: destination,
                     travelMode: window.google.maps.TravelMode.DRIVING,
                 },
                 (result, status) => {
@@ -57,20 +104,25 @@ function MapComponent({ location, destination, isAgent }) {
                 }
             );
         }
-    }, [isLoaded, isAgent, location, destination]);
+    }, [isLoaded, isAgent, location, pickupLocation, destination]);
 
     if (!isLoaded) return <div>Loading Map...</div>;
+
+    const displayLocation = location || pickupLocation;
 
     return (
         <GoogleMap
             mapContainerStyle={containerStyle}
-            center={location || defaultCenter}
+            center={displayLocation || defaultCenter}
             zoom={10}
             onLoad={onLoad}
             onUnmount={onUnmount}
         >
-            {/* Show marker for current location */}
-            {location && <Marker position={location} />}
+            {/* Show marker for current location or pickup */}
+            {displayLocation && <MarkerF position={displayLocation} label={location ? "Current" : "Pickup"} />}
+
+            {/* Show marker for destination */}
+            {destinationLocation && <MarkerF position={destinationLocation} label="Dest" />}
 
             {/* Show directions if agent and response available */}
             {isAgent && directionsResponse && (
