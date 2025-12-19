@@ -28,7 +28,8 @@ const RegisterPage = () => {
     const onSubmit = async (data) => {
         try {
             const userData = await registerUser(data).unwrap();
-            dispatch(setCredentials({ ...userData, user: userData }));
+            const { token, ...user } = userData;
+            dispatch(setCredentials({ user, token }));
             toast.success('Account created successfully!');
             navigate('/dashboard');
         } catch (err) {
