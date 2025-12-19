@@ -10,7 +10,10 @@ export const parcelApiSlice = apiSlice.injectEndpoints({
             async onCacheEntryAdded(arg, { cacheDataLoaded, cacheEntryRemoved, dispatch }) {
                 try {
                     await cacheDataLoaded;
-                    const socket = io('http://localhost:5000');
+                    const socketUrl = import.meta.env.VITE_PRODUCTION_URL
+                        ? import.meta.env.VITE_PRODUCTION_URL.replace('/api', '')
+                        : 'http://localhost:5000';
+                    const socket = io(socketUrl);
 
                     socket.on('parcelUpdated', () => {
                         dispatch(apiSlice.util.invalidateTags(['Parcel', 'Metrics']));

@@ -46,7 +46,10 @@ const ParcelDetailsPage = () => {
     }, [parcel]);
 
     useEffect(() => {
-        const socket = io('http://localhost:5000');
+        const socketUrl = import.meta.env.VITE_PRODUCTION_URL
+            ? import.meta.env.VITE_PRODUCTION_URL.replace('/api', '')
+            : 'http://localhost:5000';
+        const socket = io(socketUrl);
 
         socket.on('connect', () => {
             console.log('Socket connected:', socket.id);
