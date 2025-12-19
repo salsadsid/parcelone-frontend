@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useGetMeQuery } from '@/features/auth/authApiSlice';
-import { setCredentials, selectCurrentToken } from '@/features/auth/authSlice';
+import { setCredentials, selectCurrentToken, logOut } from '@/features/auth/authSlice';
 import { Outlet } from 'react-router-dom';
 import Loading from './Loading';
 
@@ -9,22 +9,30 @@ const PersistLogin = () => {
     const token = useSelector(selectCurrentToken);
     const dispatch = useDispatch();
 
-    // Skip query if no token
-    const { data: user, isLoading, isSuccess, isError } = useGetMeQuery(undefined, {
+
+    const { data: user, isLoading, isSuccess, isError, error } = useGetMeQuery(undefined, {
         skip: !token,
     });
 
     useEffect(() => {
-        console.log('PersistLogin effect:', { isSuccess, hasUser: !!user, token });
-        if (isSuccess && user && token) {
-            console.log('PersistLogin dispatching setCredentials');
-            dispatch(setCredentials({ user, token }));
-        }
-    }, [isSuccess, user, token, dispatch]);
+        console.log('PersistLogin effect:', {
+            isSuccess,
+            isError,
+            isLoading,
+            hasUser: !!user,
+            token: token ? `${token.substring(0, 10)}...` : null,
+            error
+        });
 
-    if (isLoading) {
-        return <Loading />
-    }
+        if (isSuccess && user && token) {
+            console.log('PersistLogin: Success, setting credentials');
+            dispatch(setCredentials({ user, token }));
+        } else if (isError) {
+            console.log('PersistLogin: Error fetching user, clearing token', error);
+            dispatch(logOut());
+        }
+    }, [isSuccess, isError, isLoading, user, token, dispatch, error]);
+
 
     return <Outlet />;
 };
