@@ -34,6 +34,10 @@ const PersistLogin = () => {
     }, [isSuccess, isError, isLoading, user, token, dispatch, error]);
 
 
+    if (isLoading) {
+        return <Loading />
+    }
+
     return <Outlet />;
 };
 
