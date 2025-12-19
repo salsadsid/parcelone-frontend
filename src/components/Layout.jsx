@@ -14,7 +14,8 @@ const Layout = () => {
         <div className="min-h-screen bg-background text-foreground">
             <nav className="bg-card shadow-sm p-4 border-b">
                 <div className="max-w-7xl mx-auto flex justify-between items-center">
-                    <Link to="/">
+                    <Link to="/" className='flex items-center gap-2'>
+                        <img src="parcelone_logo.png" alt="ParcelOne Logo" width={32} />
                         <h1 className="text-xl font-bold text-primary">ParcelOne</h1>
                     </Link>
                     {user ? (
