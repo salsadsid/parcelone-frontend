@@ -5,8 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Loading from '@/components/Loading';
 import ParcelCard from '@/components/ParcelCard';
-import { Package, Users, LayoutDashboard, Calendar, Mail, Shield, User as UserIcon, CheckCircle2, AlertCircle, DollarSign, TrendingUp } from 'lucide-react';
+import { Package, Users, LayoutDashboard, Calendar, Mail, Shield, User as UserIcon, CheckCircle2, AlertCircle, DollarSign, TrendingUp, FileDown } from 'lucide-react';
 import { toast } from 'sonner';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const AdminDashboard = () => {
     const [activeTab, setActiveTab] = useState('bookings');
@@ -36,6 +38,85 @@ const AdminDashboard = () => {
         }
     };
 
+    const exportToCSV = () => {
+        const data = activeTab === 'bookings' ? parcels : users;
+        if (!data || data.length === 0) {
+            toast.error('No data to export');
+            return;
+        }
+
+        let csvContent = "data:text/csv;charset=utf-8,";
+
+        if (activeTab === 'bookings') {
+            csvContent += "ID,Sender,Receiver,Type,Status,Cost,Date\n";
+            data.forEach(p => {
+                csvContent += `${p._id},${p.sender?.name || 'N/A'},${p.receiverName},${p.parcelType},${p.status},${p.cost},${new Date(p.createdAt).toLocaleDateString()}\n`;
+            });
+        } else {
+            csvContent += "ID,Name,Email,Role,Joined\n";
+            data.forEach(u => {
+                csvContent += `${u._id},${u.name},${u.email},${u.role},${new Date(u.createdAt).toLocaleDateString()}\n`;
+            });
+        }
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `${activeTab}_report_${new Date().toISOString().split('T')[0]}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        toast.success('CSV report exported successfully!');
+    };
+
+    const exportToPDF = () => {
+        const data = activeTab === 'bookings' ? parcels : users;
+        if (!data || data.length === 0) {
+            toast.error('No data to export');
+            return;
+        }
+
+        const doc = new jsPDF();
+        doc.text(`${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Report`, 14, 15);
+
+        const tableColumn = activeTab === 'bookings'
+            ? ["ID", "Sender", "Receiver", "Type", "Status", "Cost", "Date"]
+            : ["ID", "Name", "Email", "Role", "Joined"];
+
+        const tableRows = [];
+
+        data.forEach(item => {
+            if (activeTab === 'bookings') {
+                tableRows.push([
+                    item._id,
+                    item.sender?.name || 'N/A',
+                    item.receiverName,
+                    item.parcelType,
+                    item.status,
+                    `$${item.cost}`,
+                    new Date(item.createdAt).toLocaleDateString()
+                ]);
+            } else {
+                tableRows.push([
+                    item._id,
+                    item.name,
+                    item.email,
+                    item.role,
+                    new Date(item.createdAt).toLocaleDateString()
+                ]);
+            }
+        });
+
+        autoTable(doc, {
+            head: [tableColumn],
+            body: tableRows,
+            startY: 20,
+        });
+
+        doc.save(`${activeTab}_report_${new Date().toISOString().split('T')[0]}.pdf`);
+        toast.success('PDF report exported successfully!');
+    };
+
     return (
         <div className="space-y-8">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -43,25 +124,37 @@ const AdminDashboard = () => {
                     <h2 className="text-3xl font-bold tracking-tight">Admin Dashboard</h2>
                     <p className="text-muted-foreground">Manage your logistics network and users.</p>
                 </div>
-                <div className="flex items-center gap-2 bg-muted/50 p-1 rounded-lg border">
-                    <Button
-                        variant={activeTab === 'bookings' ? 'default' : 'ghost'}
-                        size="sm"
-                        onClick={() => setActiveTab('bookings')}
-                        className="gap-2"
-                    >
-                        <LayoutDashboard className="w-4 h-4" />
-                        Bookings
-                    </Button>
-                    <Button
-                        variant={activeTab === 'users' ? 'default' : 'ghost'}
-                        size="sm"
-                        onClick={() => setActiveTab('users')}
-                        className="gap-2"
-                    >
-                        <Users className="w-4 h-4" />
-                        Users
-                    </Button>
+                <div className="flex flex-wrap items-center gap-4">
+                    <div className="flex items-center gap-2 bg-muted/50 p-1 rounded-lg border">
+                        <Button
+                            variant={activeTab === 'bookings' ? 'default' : 'ghost'}
+                            size="sm"
+                            onClick={() => setActiveTab('bookings')}
+                            className="gap-2"
+                        >
+                            <LayoutDashboard className="w-4 h-4" />
+                            Bookings
+                        </Button>
+                        <Button
+                            variant={activeTab === 'users' ? 'default' : 'ghost'}
+                            size="sm"
+                            onClick={() => setActiveTab('users')}
+                            className="gap-2"
+                        >
+                            <Users className="w-4 h-4" />
+                            Users
+                        </Button>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Button variant="outline" size="sm" onClick={exportToCSV} className="gap-2">
+                            <FileDown className="w-4 h-4" />
+                            CSV
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={exportToPDF} className="gap-2">
+                            <FileDown className="w-4 h-4" />
+                            PDF
+                        </Button>
+                    </div>
                 </div>
             </div>
 
