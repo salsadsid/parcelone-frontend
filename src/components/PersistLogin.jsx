@@ -1,17 +1,18 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useGetMeQuery } from '@/features/auth/authApiSlice';
-import { setCredentials, selectCurrentToken, logOut } from '@/features/auth/authSlice';
+import { setCredentials, selectCurrentToken, logOut, selectCurrentUser } from '@/features/auth/authSlice';
 import { Outlet } from 'react-router-dom';
 import Loading from './Loading';
 
 const PersistLogin = () => {
     const token = useSelector(selectCurrentToken);
+    const userInStore = useSelector(selectCurrentUser);
     const dispatch = useDispatch();
 
 
     const { data: user, isLoading, isSuccess, isError, error } = useGetMeQuery(undefined, {
-        skip: !token,
+        skip: !token || !!userInStore,
     });
 
     useEffect(() => {
@@ -33,6 +34,10 @@ const PersistLogin = () => {
         }
     }, [isSuccess, isError, isLoading, user, token, dispatch, error]);
 
+
+    if (isLoading) {
+        return <Loading />
+    }
 
     return <Outlet />;
 };

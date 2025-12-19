@@ -21,7 +21,8 @@ const LoginPage = () => {
     const onSubmit = async (data) => {
         try {
             const userData = await login(data).unwrap();
-            dispatch(setCredentials({ ...userData, user: userData }));
+            const { token, ...user } = userData;
+            dispatch(setCredentials({ user, token }));
             toast.success('Welcome back!');
             navigate('/dashboard');
         } catch (err) {
