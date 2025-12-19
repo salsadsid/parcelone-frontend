@@ -2,7 +2,7 @@ import { Link, useNavigate, Outlet } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectCurrentUser, logOut } from '@/features/auth/authSlice';
-import { apiSlice } from '@/features/auth/authApiSlice';
+import { apiSlice } from '@/features/auth/apiSlice';
 import ThemeToggle from '@/components/ThemeToggle';
 
 const Layout = () => {

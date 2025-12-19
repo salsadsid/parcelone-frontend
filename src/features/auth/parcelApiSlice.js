@@ -1,4 +1,4 @@
-import { apiSlice } from './authApiSlice';
+import { apiSlice } from './apiSlice';
 
 import { io } from 'socket.io-client';
 
