@@ -131,7 +131,32 @@ const ParcelDetailsPage = () => {
     };
 
     if (isParcelLoading) return <Loading fullScreen={false} />;
-    if (!parcel) return <div className="text-center py-20">Parcel not found</div>;
+
+    if (!parcel) return (
+        <div className="min-h-[60vh] flex flex-col items-center justify-center p-6 text-center space-y-6">
+            <motion.div
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="w-24 h-24 rounded-full bg-muted/30 flex items-center justify-center border-2 border-dashed border-muted"
+            >
+                <Package className="w-12 h-12 text-muted-foreground/40" />
+            </motion.div>
+            <div className="space-y-2">
+                <h2 className="text-2xl font-bold tracking-tight">Parcel Not Found</h2>
+                <p className="text-muted-foreground max-w-xs mx-auto">
+                    The parcel you are looking for doesn't exist or you don't have permission to view it.
+                </p>
+            </div>
+            <Button
+                onClick={() => navigate('/dashboard')}
+                variant="outline"
+                className="gap-2 rounded-xl"
+            >
+                <ChevronLeft className="w-4 h-4" />
+                Back to Dashboard
+            </Button>
+        </div>
+    );
 
     const isAgent = user.role === 'agent'; // Keep this definition for rendering logic
 
