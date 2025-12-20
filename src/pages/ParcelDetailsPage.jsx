@@ -64,37 +64,55 @@ const ParcelDetailsPage = () => {
         return () => socket.close();
     }, [id]);
 
-    const simulateTracking = async () => {
-        setIsTracking(true);
-        let lat = 40.7128;
-        let lng = -74.0060;
-
-        try {
-            const initialLocation = { lat, lng };
-            await updateLocation({ id, location: initialLocation }).unwrap();
-            setCurrentLocation(initialLocation);
-        } catch (err) {
-            console.error('Failed to update location:', err);
+    useEffect(() => {
+        let watchId;
+        const isAgent = user?.role === 'agent'; // Define isAgent here for useEffect scope
+        if (isTracking && isAgent) {
+            if ("geolocation" in navigator) {
+                watchId = navigator.geolocation.watchPosition(
+                    async (position) => {
+                        const newLocation = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+                        try {
+                            await updateLocation({ id, location: newLocation }).unwrap();
+                            setCurrentLocation(newLocation);
+                        } catch (err) {
+                            console.error('Failed to update location:', err);
+                        }
+                    },
+                    (error) => {
+                        console.error('Geolocation error:', error);
+                        setMapError('Failed to get your current location. Please ensure location services are enabled.');
+                        setIsTracking(false);
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        maximumAge: 10000,
+                        timeout: 5000
+                    }
+                );
+            } else {
+                setMapError('Geolocation is not supported by your browser');
+                setIsTracking(false);
+            }
         }
 
-        const interval = setInterval(async () => {
-            lat += 0.001;
-            lng += 0.001;
-            const newLocation = { lat, lng };
-            try {
-                await updateLocation({ id, location: newLocation }).unwrap();
-                setCurrentLocation(newLocation);
-            } catch (err) {
-                console.error('Failed to update location:', err);
+        return () => {
+            if (watchId) {
+                navigator.geolocation.clearWatch(watchId);
             }
-        }, 3000);
+        };
+    }, [isTracking, user?.role, id, updateLocation]); // Add user?.role to dependencies
 
-        return () => clearInterval(interval);
+    const startTracking = () => {
+        setIsTracking(true);
     };
 
     if (!parcel) return <Loading fullScreen={false} />;
 
-    const isAgent = user.role === 'agent';
+    const isAgent = user.role === 'agent'; // Keep this definition for rendering logic
 
     const statusSteps = [
         { id: 'pending', label: 'Order Placed', icon: Clock },
@@ -361,7 +379,7 @@ const ParcelDetailsPage = () => {
                                 className="space-y-3"
                             >
                                 <Button
-                                    onClick={simulateTracking}
+                                    onClick={startTracking}
                                     disabled={isTracking}
                                     className="w-full h-12 rounded-2xl font-bold shadow-lg shadow-primary/20 gap-2"
                                 >

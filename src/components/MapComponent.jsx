@@ -7,7 +7,7 @@ const containerStyle = {
 };
 
 const defaultCenter = {
-    lat: ~23.77,
+    lat: 23.77,
     lng: 90.39
 };
 

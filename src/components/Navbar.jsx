@@ -16,6 +16,7 @@ const Navbar = () => {
 
     const handleLogout = () => {
         dispatch(apiSlice.util.resetApiState());
+        dispatch(apiSlice.util.invalidateTags(['User', 'Parcel', 'Metrics']));
         dispatch(logOut());
         setIsMenuOpen(false);
         navigate('/login');

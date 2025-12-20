@@ -25,17 +25,17 @@ const PersistLogin = () => {
             error
         });
 
-        if (isSuccess && user && token) {
+        if (isSuccess && user && token && !userInStore) {
             console.log('PersistLogin: Success, setting credentials');
             dispatch(setCredentials({ user, token }));
         } else if (isError) {
             console.log('PersistLogin: Error fetching user, clearing token', error);
             dispatch(logOut());
         }
-    }, [isSuccess, isError, isLoading, user, token, dispatch, error]);
+    }, [isSuccess, isError, isLoading, user, token, dispatch, error, userInStore]);
 
 
-    if (isLoading) {
+    if (isLoading || (token && !userInStore && !isError)) {
         return <Loading />
     }
 
