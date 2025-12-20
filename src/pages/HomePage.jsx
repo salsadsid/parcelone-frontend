@@ -123,19 +123,66 @@ const HomePage = () => {
             </section>
 
             {/* How It Works Section */}
-            <section className="py-24 relative">
+            <section className="py-32 relative overflow-hidden">
                 <div className="absolute inset-0 -z-10 opacity-[0.03] dark:opacity-[0.05]" style={{ backgroundImage: 'linear-gradient(to right, #888 1px, transparent 1px), linear-gradient(to bottom, #888 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
 
+                {/* Decorative Elements */}
+                <div className="absolute top-1/4 -left-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl -z-10" />
+                <div className="absolute bottom-1/4 -right-20 w-64 h-64 bg-secondary/10 rounded-full blur-3xl -z-10" />
+
                 <div className="container px-4 md:px-6 mx-auto">
-                    <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
-                        <h2 className="text-4xl font-bold tracking-tight">How It Works</h2>
-                        <p className="text-lg text-muted-foreground">Simple, transparent, and efficient steps to get your package moving.</p>
+                    <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
+                        <motion.h2
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            className="text-4xl md:text-5xl font-bold tracking-tight"
+                        >
+                            The ParcelOne Journey
+                        </motion.h2>
+                        <motion.p
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.1 }}
+                            className="text-lg text-muted-foreground"
+                        >
+                            Experience a seamless, transparent, and secure logistics process from start to finish.
+                        </motion.p>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-12 relative">
-                        <StepCard number="1" icon={<Package />} title="Book" description="Schedule a pickup online in seconds." />
-                        <StepCard number="2" icon={<Truck />} title="Pickup" description="Our agent collects the parcel from your door." />
-                        <StepCard number="3" icon={<MapPin />} title="Track" description="Watch your parcel move in real-time." />
-                        <StepCard number="4" icon={<ShieldCheck />} title="Delivered" description="Safe delivery to the destination." />
+
+                    <div className="relative grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8">
+                        {/* Connecting Line (Desktop) */}
+                        <div className="hidden md:block absolute top-12 left-[10%] right-[10%] h-0.5 border-t-2 border-dashed border-primary/20 -z-0" />
+
+                        <StepCard
+                            number="01"
+                            icon={<Package className="w-8 h-8" />}
+                            title="Instant Booking"
+                            description="Schedule your pickup in seconds with our intuitive interface. Choose your service and get instant pricing."
+                            delay={0.1}
+                        />
+                        <StepCard
+                            number="02"
+                            icon={<Truck className="w-8 h-8" />}
+                            title="Safe Collection"
+                            description="Our professional agents arrive at your doorstep for a secure pickup. We handle every parcel with premium care."
+                            delay={0.2}
+                        />
+                        <StepCard
+                            number="03"
+                            icon={<MapPin className="w-8 h-8" />}
+                            title="Live Tracking"
+                            description="Watch your parcel's journey in real-time on our interactive map. Stay updated with every milestone."
+                            delay={0.3}
+                        />
+                        <StepCard
+                            number="04"
+                            icon={<ShieldCheck className="w-8 h-8" />}
+                            title="Secure Delivery"
+                            description="Verified delivery at the destination with instant digital confirmation and detailed receipts."
+                            delay={0.4}
+                        />
                     </div>
                 </div>
             </section>
@@ -158,12 +205,12 @@ const HomePage = () => {
                         </p>
                         <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
                             <Link to="/register">
-                                <Button size="lg" className="h-14 px-10 text-lg font-bold bg-white text-zinc-900 hover:bg-zinc-200">
+                                <Button size="lg" className="h-14 px-10 text-lg font-bold bg-white text-zinc-900 hover:bg-zinc-100 transition-colors">
                                     Create Free Account
                                 </Button>
                             </Link>
                             <Link to="/login">
-                                <Button size="lg" variant="outline" className="h-14 px-10 text-lg font-bold border-white/20 hover:bg-white/10">
+                                <Button size="lg" className="h-14 px-10 text-lg font-bold border border-white/20 bg-transparent text-white hover:bg-white/10 transition-all">
                                     Sign In
                                 </Button>
                             </Link>
@@ -211,19 +258,30 @@ const StatCard = ({ number, label }) => (
     </motion.div>
 );
 
-const StepCard = ({ number, icon, title, description }) => (
-    <div className="relative flex flex-col items-center text-center space-y-6">
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-secondary text-white flex items-center justify-center text-2xl font-bold z-10 shadow-lg shadow-primary/20">
-            {number}
-        </div>
-        <div className="bg-card p-8 rounded-3xl border border-muted w-full h-full hover:border-primary/50 hover:shadow-lg transition-all duration-300 group">
-            <div className="mb-4 flex justify-center text-primary group-hover:scale-110 transition-transform duration-300">
-                {React.cloneElement(icon, { size: 32 })}
+const StepCard = ({ number, icon, title, description, delay }) => (
+    <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay }}
+        className="relative flex flex-col items-center text-center group"
+    >
+        <div className="w-24 h-24 rounded-3xl bg-card border border-muted flex items-center justify-center mb-8 relative z-10 shadow-sm group-hover:border-primary/50 group-hover:shadow-xl group-hover:shadow-primary/5 transition-all duration-500 group-hover:-translate-y-2">
+            <div className="absolute -top-3 -right-3 w-10 h-10 rounded-2xl bg-gradient-to-br from-primary to-secondary text-white flex items-center justify-center text-sm font-bold shadow-lg shadow-primary/20 border-2 border-background">
+                {number}
             </div>
-            <h4 className="text-xl font-bold mb-2">{title}</h4>
-            <p className="text-muted-foreground">{description}</p>
+            <div className="text-primary group-hover:scale-110 transition-transform duration-500">
+                {icon}
+            </div>
         </div>
-    </div>
+
+        <div className="space-y-3 px-4">
+            <h4 className="text-xl font-bold group-hover:text-primary transition-colors duration-300">{title}</h4>
+            <p className="text-muted-foreground leading-relaxed text-sm md:text-base">
+                {description}
+            </p>
+        </div>
+    </motion.div>
 );
 
 export default HomePage;
