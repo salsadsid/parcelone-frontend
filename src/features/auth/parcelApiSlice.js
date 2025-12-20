@@ -26,6 +26,30 @@ export const parcelApiSlice = apiSlice.injectEndpoints({
                 }
             },
         }),
+        getParcelById: builder.query({
+            query: (id) => `/parcels/${id}`,
+            providesTags: (result, error, id) => [{ type: 'Parcel', id }],
+            async onCacheEntryAdded(arg, { cacheDataLoaded, cacheEntryRemoved, dispatch }) {
+                try {
+                    await cacheDataLoaded;
+                    const socketUrl = import.meta.env.VITE_PRODUCTION_URL
+                        ? import.meta.env.VITE_PRODUCTION_URL.replace('/api', '')
+                        : 'http://localhost:5000';
+                    const socket = io(socketUrl);
+
+                    socket.on('parcelUpdated', (data) => {
+                        if (data.parcelId === arg) {
+                            dispatch(apiSlice.util.invalidateTags([{ type: 'Parcel', id: arg }]));
+                        }
+                    });
+
+                    await cacheEntryRemoved;
+                    socket.close();
+                } catch {
+                    // no-op
+                }
+            },
+        }),
         createParcel: builder.mutation({
             query: (parcelData) => ({
                 url: '/parcels',
@@ -69,6 +93,7 @@ export const parcelApiSlice = apiSlice.injectEndpoints({
 
 export const {
     useGetParcelsQuery,
+    useGetParcelByIdQuery,
     useCreateParcelMutation,
     useUpdateParcelStatusMutation,
     useAssignAgentMutation,

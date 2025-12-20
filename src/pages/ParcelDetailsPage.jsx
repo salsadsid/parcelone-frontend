@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useGetParcelsQuery, useUpdateLocationMutation } from '@/features/auth/parcelApiSlice';
+import { useGetParcelByIdQuery, useGetParcelsQuery, useUpdateLocationMutation } from '@/features/auth/parcelApiSlice';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '@/features/auth/authSlice';
 import MapComponent from '@/components/MapComponent';
@@ -30,8 +30,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 const ParcelDetailsPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { data: parcels } = useGetParcelsQuery();
-    const parcel = parcels?.find(p => p._id === id);
+    const { data: parcel, isLoading: isParcelLoading } = useGetParcelByIdQuery(id);
     const user = useSelector(selectCurrentUser);
     const [updateLocation, { isLoading: isUpdatingLocation }] = useUpdateLocationMutation();
 
@@ -131,7 +130,8 @@ const ParcelDetailsPage = () => {
         toast.info('Starting location tracking...');
     };
 
-    if (!parcel) return <Loading fullScreen={false} />;
+    if (isParcelLoading) return <Loading fullScreen={false} />;
+    if (!parcel) return <div className="text-center py-20">Parcel not found</div>;
 
     const isAgent = user.role === 'agent'; // Keep this definition for rendering logic
 
