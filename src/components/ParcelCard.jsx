@@ -143,7 +143,7 @@ const ParcelCard = ({
 
                         {/* Role Specific Actions */}
                         <div className="pt-2">
-                            {role === 'customer' && (
+                            {role === 'customer' && (parcel.status !== 'pending' && parcel.status !== 'assigned') && (
                                 <Link to={`/parcels/${parcel._id}`} className="block">
                                     <Button className="w-full group bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all duration-300">
                                         Track Shipment
@@ -175,12 +175,14 @@ const ParcelCard = ({
                                             </Button>
                                         ))}
                                     </div>
-                                    <Link to={`/parcels/${parcel._id}`} className="block pt-1">
-                                        <Button variant="secondary" size="sm" className="w-full text-xs font-bold gap-2" disabled={isUpdating}>
-                                            <MapPin size={14} />
-                                            View Route & Details
-                                        </Button>
-                                    </Link>
+                                    {(parcel.status === 'picked_up' || parcel.status === 'in_transit') && (
+                                        <Link to={`/parcels/${parcel._id}`} className="block pt-1">
+                                            <Button variant="secondary" size="sm" className="w-full text-xs font-bold gap-2" disabled={isUpdating}>
+                                                <MapPin size={14} />
+                                                View Route & Details
+                                            </Button>
+                                        </Link>
+                                    )}
                                 </div>
                             )}
 
