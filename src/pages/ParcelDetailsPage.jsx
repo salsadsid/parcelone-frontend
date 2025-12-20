@@ -66,34 +66,49 @@ const ParcelDetailsPage = () => {
 
     useEffect(() => {
         let watchId;
-        const isAgent = user?.role === 'agent'; // Define isAgent here for useEffect scope
+        const isAgent = user?.role === 'agent';
+
+        console.log('Tracking Effect:', { isTracking, isAgent, hasGeolocation: "geolocation" in navigator });
+
         if (isTracking && isAgent) {
             if ("geolocation" in navigator) {
+                console.log('Starting geolocation watch...');
                 watchId = navigator.geolocation.watchPosition(
                     async (position) => {
                         const newLocation = {
                             lat: position.coords.latitude,
                             lng: position.coords.longitude
                         };
+                        console.log('New position received:', newLocation);
                         try {
                             await updateLocation({ id, location: newLocation }).unwrap();
                             setCurrentLocation(newLocation);
                         } catch (err) {
-                            console.error('Failed to update location:', err);
+                            console.error('Failed to update location on server:', err);
                         }
                     },
                     (error) => {
                         console.error('Geolocation error:', error);
-                        setMapError('Failed to get your current location. Please ensure location services are enabled.');
-                        setIsTracking(false);
+                        let errorMessage = 'Failed to get your current location.';
+                        if (error.code === error.PERMISSION_DENIED) {
+                            errorMessage = 'Location permission denied. Please enable it in your browser settings.';
+                        } else if (error.code === error.TIMEOUT) {
+                            errorMessage = 'Location request timed out. Retrying...';
+                        }
+                        setMapError(errorMessage);
+                        // Don't set isTracking to false on timeout, let it retry
+                        if (error.code !== error.TIMEOUT) {
+                            setIsTracking(false);
+                        }
                     },
                     {
                         enableHighAccuracy: true,
-                        maximumAge: 10000,
-                        timeout: 5000
+                        maximumAge: 0, // Force fresh location
+                        timeout: 10000 // Increase timeout to 10 seconds
                     }
                 );
             } else {
+                console.error('Geolocation not supported');
                 setMapError('Geolocation is not supported by your browser');
                 setIsTracking(false);
             }
@@ -101,13 +116,19 @@ const ParcelDetailsPage = () => {
 
         return () => {
             if (watchId) {
+                console.log('Stopping geolocation watch');
                 navigator.geolocation.clearWatch(watchId);
             }
         };
     }, [isTracking, user?.role, id, updateLocation]); // Add user?.role to dependencies
 
     const startTracking = () => {
+        if (!("geolocation" in navigator)) {
+            toast.error('Geolocation is not supported by your browser');
+            return;
+        }
         setIsTracking(true);
+        toast.info('Starting location tracking...');
     };
 
     if (!parcel) return <Loading fullScreen={false} />;
