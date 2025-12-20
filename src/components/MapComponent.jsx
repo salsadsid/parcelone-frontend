@@ -3,12 +3,21 @@ import { GoogleMap, useJsApiLoader, MarkerF, DirectionsRenderer } from '@react-g
 
 const containerStyle = {
     width: '100%',
-    height: '400px'
+    height: '500px',
+    borderRadius: '1rem'
 };
 
 const defaultCenter = {
     lat: 23.77,
     lng: 90.39
+};
+
+const mapOptions = {
+    fullscreenControl: true,
+    streetViewControl: false,
+    mapTypeControl: false,
+    zoomControl: true,
+    gestureHandling: 'greedy', // Better for mobile scrolling
 };
 
 function MapComponent({ location, destination, pickup, isAgent, onError }) {
@@ -119,6 +128,7 @@ function MapComponent({ location, destination, pickup, isAgent, onError }) {
             zoom={10}
             onLoad={onLoad}
             onUnmount={onUnmount}
+            options={mapOptions}
         >
             {/* Show marker for current location or pickup */}
             {displayLocation && <MarkerF position={displayLocation} label={location ? "Current" : "Pickup"} />}

@@ -191,7 +191,7 @@ const ParcelDetailsPage = () => {
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="relative rounded-3xl overflow-hidden border border-primary/5 shadow-2xl bg-card aspect-[16/9] lg:aspect-auto lg:h-[500px]"
+                            className="relative rounded-2xl overflow-hidden border border-primary/10 shadow-2xl bg-card min-h-[400px] lg:h-[550px]"
                         >
                             <AnimatePresence>
                                 {mapError ? (
@@ -247,8 +247,8 @@ const ParcelDetailsPage = () => {
                         </motion.div>
 
                         {/* Status Timeline */}
-                        <Card className="rounded-3xl border-primary/5 shadow-xl overflow-hidden">
-                            <div className="p-6 border-b border-primary/5 bg-muted/30">
+                        <Card className="rounded-2xl border-primary/10 shadow-xl overflow-hidden">
+                            <div className="p-6 border-b border-primary/10 bg-muted/30">
                                 <h3 className="font-bold flex items-center gap-2">
                                     <Clock className="w-5 h-5 text-primary" />
                                     Delivery Journey
@@ -297,8 +297,8 @@ const ParcelDetailsPage = () => {
                     {/* Right Column: Details & Actions */}
                     <div className="lg:col-span-4 space-y-6">
                         {/* Parcel Info Card */}
-                        <Card className="rounded-3xl border-primary/5 shadow-xl overflow-hidden">
-                            <div className="p-6 border-b border-primary/5 bg-muted/30">
+                        <Card className="rounded-2xl border-primary/10 shadow-xl overflow-hidden">
+                            <div className="p-6 border-b border-primary/10 bg-muted/30">
                                 <h3 className="font-bold flex items-center gap-2">
                                     <Package className="w-5 h-5 text-primary" />
                                     Shipment Details
@@ -310,7 +310,7 @@ const ParcelDetailsPage = () => {
                                     <div className="flex gap-3">
                                         <div className="flex flex-col items-center gap-1 pt-1">
                                             <div className="w-2 h-2 rounded-full bg-primary" />
-                                            <div className="w-0.5 h-8 bg-dashed border-l border-primary/20" />
+                                            <div className="w-0.5 h-8 bg-dashed border-l border-primary/10" />
                                             <MapPin className="w-4 h-4 text-secondary" />
                                         </div>
                                         <div className="flex-1 space-y-3">
@@ -332,14 +332,14 @@ const ParcelDetailsPage = () => {
 
                                 {/* Specs Grid */}
                                 <div className="grid grid-cols-2 gap-3">
-                                    <div className="p-3 rounded-2xl bg-muted/50 border border-primary/5 space-y-1">
+                                    <div className="p-3 rounded-xl bg-muted/50 border border-primary/10 space-y-1">
                                         <div className="flex items-center gap-1.5 text-muted-foreground">
                                             <Box size={12} className="text-primary/60" />
                                             <span className="text-[9px] font-bold uppercase tracking-wider">Type</span>
                                         </div>
                                         <p className="text-xs font-bold capitalize">{parcel.parcelType}</p>
                                     </div>
-                                    <div className="p-3 rounded-2xl bg-muted/50 border border-primary/5 space-y-1">
+                                    <div className="p-3 rounded-xl bg-muted/50 border border-primary/10 space-y-1">
                                         <div className="flex items-center gap-1.5 text-muted-foreground">
                                             <Scale size={12} className="text-primary/60" />
                                             <span className="text-[9px] font-bold uppercase tracking-wider">Weight</span>
@@ -347,7 +347,7 @@ const ParcelDetailsPage = () => {
                                         <p className="text-xs font-bold">{parcel.weight} kg</p>
                                     </div>
                                     {parcel.parcelType === 'box' && (
-                                        <div className="col-span-2 p-3 rounded-2xl bg-muted/50 border border-primary/5 space-y-1">
+                                        <div className="col-span-2 p-3 rounded-xl bg-muted/50 border border-primary/10 space-y-1">
                                             <div className="flex items-center gap-1.5 text-muted-foreground">
                                                 <Maximize size={12} className="text-primary/60" />
                                                 <span className="text-[9px] font-bold uppercase tracking-wider">Dimensions</span>
@@ -357,7 +357,7 @@ const ParcelDetailsPage = () => {
                                             </p>
                                         </div>
                                     )}
-                                    <div className="col-span-2 p-3 rounded-2xl bg-primary/5 border border-primary/10 space-y-1">
+                                    <div className="col-span-2 p-3 rounded-xl bg-primary/5 border border-primary/10 space-y-1">
                                         <div className="flex items-center gap-1.5 text-muted-foreground">
                                             <DollarSign size={12} className="text-primary/60" />
                                             <span className="text-[9px] font-bold uppercase tracking-wider">Payment</span>
@@ -371,9 +371,9 @@ const ParcelDetailsPage = () => {
 
                                 {/* Contact Info (For Agent/Admin) */}
                                 {(isAgent || user.role === 'admin') && (
-                                    <div className="pt-4 border-t border-primary/5 space-y-3">
+                                    <div className="pt-4 border-t border-primary/10 space-y-3">
                                         <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Receiver Contact</p>
-                                        <div className="flex items-center justify-between bg-muted/30 p-3 rounded-2xl border border-primary/5">
+                                        <div className="flex items-center justify-between bg-muted/30 p-3 rounded-xl border border-primary/10">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
                                                     <User className="w-4 h-4 text-primary" />
@@ -393,7 +393,7 @@ const ParcelDetailsPage = () => {
                         </Card>
 
                         {/* Agent Actions */}
-                        {isAgent && (
+                        {isAgent && (parcel.status === 'picked_up' || parcel.status === 'in_transit') && (
                             <motion.div
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
@@ -428,7 +428,7 @@ const ParcelDetailsPage = () => {
                         )}
 
                         {/* Help Card */}
-                        <div className="p-6 rounded-3xl bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white space-y-4 relative overflow-hidden border border-zinc-200 dark:border-transparent">
+                        <div className="p-6 rounded-2xl bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white space-y-4 relative overflow-hidden border border-zinc-200 dark:border-transparent">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 dark:bg-primary/20 rounded-full blur-2xl -mr-16 -mt-16" />
                             <h4 className="font-bold relative z-10 flex items-center gap-2">
                                 <AlertCircle className="w-4 h-4 text-primary" />
