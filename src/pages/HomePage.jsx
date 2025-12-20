@@ -205,12 +205,12 @@ const HomePage = () => {
                         </p>
                         <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
                             <Link to="/register">
-                                <Button size="lg" className="h-14 px-10 text-lg font-bold bg-white text-zinc-900 hover:bg-zinc-200">
+                                <Button size="lg" className="h-14 px-10 text-lg font-bold bg-white text-zinc-900 hover:bg-zinc-100 transition-colors">
                                     Create Free Account
                                 </Button>
                             </Link>
                             <Link to="/login">
-                                <Button size="lg" variant="outline" className="h-14 px-10 text-lg font-bold border-white/20 hover:bg-white/10">
+                                <Button size="lg" className="h-14 px-10 text-lg font-bold border border-white/20 bg-transparent text-white hover:bg-white/10 transition-all">
                                     Sign In
                                 </Button>
                             </Link>
