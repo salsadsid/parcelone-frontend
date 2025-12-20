@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useGetParcelsQuery, useUpdateLocationMutation } from '@/features/auth/parcelApiSlice';
+import { useGetParcelByIdQuery, useGetParcelsQuery, useUpdateLocationMutation } from '@/features/auth/parcelApiSlice';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '@/features/auth/authSlice';
 import MapComponent from '@/components/MapComponent';
@@ -30,8 +30,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 const ParcelDetailsPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { data: parcels } = useGetParcelsQuery();
-    const parcel = parcels?.find(p => p._id === id);
+    const { data: parcel, isLoading: isParcelLoading } = useGetParcelByIdQuery(id);
     const user = useSelector(selectCurrentUser);
     const [updateLocation, { isLoading: isUpdatingLocation }] = useUpdateLocationMutation();
 
@@ -131,7 +130,33 @@ const ParcelDetailsPage = () => {
         toast.info('Starting location tracking...');
     };
 
-    if (!parcel) return <Loading fullScreen={false} />;
+    if (isParcelLoading) return <Loading fullScreen={false} />;
+
+    if (!parcel) return (
+        <div className="min-h-[60vh] flex flex-col items-center justify-center p-6 text-center space-y-6">
+            <motion.div
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="w-24 h-24 rounded-full bg-muted/30 flex items-center justify-center border-2 border-dashed border-muted"
+            >
+                <Package className="w-12 h-12 text-muted-foreground/40" />
+            </motion.div>
+            <div className="space-y-2">
+                <h2 className="text-2xl font-bold tracking-tight">Parcel Not Found</h2>
+                <p className="text-muted-foreground max-w-xs mx-auto">
+                    The parcel you are looking for doesn't exist or you don't have permission to view it.
+                </p>
+            </div>
+            <Button
+                onClick={() => navigate('/dashboard')}
+                variant="outline"
+                className="gap-2 rounded-xl"
+            >
+                <ChevronLeft className="w-4 h-4" />
+                Back to Dashboard
+            </Button>
+        </div>
+    );
 
     const isAgent = user.role === 'agent'; // Keep this definition for rendering logic
 
