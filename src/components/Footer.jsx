@@ -1,5 +1,6 @@
 import React from 'react';
 import { Github, Heart } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
     return (
@@ -7,12 +8,12 @@ const Footer = () => {
             <div className="max-w-7xl mx-auto px-4 py-12">
                 <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                     <div className="flex flex-col items-center md:items-start gap-2">
-                        <div className="flex items-center gap-2 text-xl font-bold tracking-tighter">
-                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-sm">
-                                P1
+                        <Link to="/" className='flex items-center gap-2 group' onClick={() => setIsMenuOpen(false)}>
+                            <div className="p-1.5 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
+                                <img src="parcelone_logo.png" alt="ParcelOne Logo" width={24} className="w-6 h-6" />
                             </div>
-                            ParcelOne
-                        </div>
+                            <h1 className="text-xl font-bold text-primary tracking-tight">ParcelOne</h1>
+                        </Link>
                         <p className="text-sm text-muted-foreground">
                             Next-gen logistics for a fast-paced world.
                         </p>
