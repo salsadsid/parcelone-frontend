@@ -16,5 +16,11 @@ export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery,
     tagTypes: ['User', 'Parcel', 'Metrics'],
-    endpoints: (builder) => ({}),
+    endpoints: (builder) => ({
+        getHealth: builder.query({
+            query: () => '/health',
+        }),
+    }),
 });
+
+export const { useGetHealthQuery } = apiSlice;
