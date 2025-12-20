@@ -143,10 +143,10 @@ const ParcelCard = ({
 
                         {/* Role Specific Actions */}
                         <div className="pt-2">
-                            {role === 'customer' && (parcel.status === 'picked_up' || parcel.status === 'in_transit') && (
+                            {role === 'customer' && (
                                 <Link to={`/parcels/${parcel._id}`} className="block">
                                     <Button className="w-full group bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all duration-300">
-                                        Track Shipment
+                                        {(parcel.status === 'picked_up' || parcel.status === 'in_transit') ? 'Track Shipment' : 'View Details'}
                                         <ChevronRight size={16} className="ml-1 group-hover:translate-x-1 transition-transform" />
                                     </Button>
                                 </Link>
